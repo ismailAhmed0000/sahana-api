@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('safe_points', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-
+            $table->enum('type', ['shelter,food_distribution,medical_camp,other']);
             $table->integer('capacity');
             $table->enum('status', ['sufficient', 'insufficient', 'critical']);
             $table->decimal('latitude', 10, 7)->nullable();

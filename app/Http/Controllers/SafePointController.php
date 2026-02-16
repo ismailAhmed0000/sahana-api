@@ -25,7 +25,7 @@ class SafePointController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            // 'type' => 'required|in:shelter,food_distribution,medical_camp',
+            'type' => 'required|in:shelter,food_distribution,medical_camp,other',
             'capacity' => 'required|integer|min:0',
             'location.lat' => 'required|numeric|between:-90,90',
             'location.lng' => 'required|numeric|between:-180,180',
@@ -38,7 +38,7 @@ class SafePointController extends Controller
         $safePoint = DB::transaction(function () use ($data) {
             $safePoint = SafePoint::create([
                 'name' => $data['name'],
-                // 'type' => $data['type'],
+                'type' => $data['type'],
                 'capacity' => $data['capacity'],
                 'status' => $data['resourceStatus'],
                 'latitude' => data_get($data, 'location.lat'),
@@ -65,7 +65,7 @@ class SafePointController extends Controller
     {
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'type' => 'sometimes|in:shelter,food_distribution,medical_camp',
+            'type' => 'sometimes|in:shelter,food_distribution,medical_camp,other',
             'capacity' => 'sometimes|integer|min:0',
             'location.lat' => 'sometimes|numeric|between:-90,90',
             'location.lng' => 'sometimes|numeric|between:-180,180',
