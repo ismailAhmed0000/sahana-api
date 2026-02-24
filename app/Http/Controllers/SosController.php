@@ -9,7 +9,7 @@ class SosController extends Controller
 {
     public function index()
     {
-        $sos = Sos::get();
+        $sos = Sos::orderBy('desc')->get();
         return response()->json(['message' => 'All sos requests retrieved', 'data' => $sos]);
     }
 
