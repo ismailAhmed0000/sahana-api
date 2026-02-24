@@ -40,14 +40,36 @@ class DisatserController extends Controller
     public function update(Request $request, DisasterPoint $disaster)
     {
         $data = $request->validate([
-            'type' => 'sometimes|in:flood,storm,earthquake,fire',
+            'disasterType' => 'sometimes|in:flood,storm,earthquake,fire',
+            'disasterLevel' => 'sometimes|in:low,medium,high,very_high',
             'description' => 'sometimes|string',
-            'latitude' => 'sometimes|numeric|between:-90,90',
-            'longitude' => 'sometimes|numeric|between:-180,180',
-            'disaster_level' => 'sometimes|in:low,medium,high,very_high',
+            'location.lat' => 'sometimes|numeric|between:-90,90',
+            'location.lng' => 'sometimes|numeric|between:-180,180',
         ]);
 
-        $disaster->update($data);
+        $mappedData = [];
+
+        if (isset($data['disasterType'])) {
+            $mappedData['type'] = $data['disasterType'];
+        }
+
+        if (isset($data['disasterLevel'])) {
+            $mappedData['disaster_level'] = $data['disasterLevel'];
+        }
+
+        if (isset($data['description'])) {
+            $mappedData['description'] = $data['description'];
+        }
+
+        if (isset($data['location']['lat'])) {
+            $mappedData['latitude'] = $data['location']['lat'];
+        }
+
+        if (isset($data['location']['lng'])) {
+            $mappedData['longitude'] = $data['location']['lng'];
+        }
+
+        $disaster->update($mappedData);
 
         return response()->json([
             'message' => 'DisasterPoint updated successfully',
