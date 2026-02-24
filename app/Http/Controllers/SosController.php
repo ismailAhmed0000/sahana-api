@@ -26,6 +26,7 @@ class SosController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'status' => 'required|in:pending,attending,solved'
         ]);
 
         if ($request->hasFile('image')) {
@@ -45,6 +46,7 @@ class SosController extends Controller
             'description' => 'sometimes|string|max:255',
             'latitude' => 'sometimes|numeric',
             'longitude' => 'sometimes|numeric',
+            'status' => 'sometimes|in:pending,attending,solved'
         ]);
 
         $sos->update($data);

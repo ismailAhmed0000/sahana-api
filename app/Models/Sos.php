@@ -9,7 +9,8 @@ class Sos extends Model
     protected $fillable = [
         'description',
         'latitude ',
-        'longitude'
+        'longitude',
+        'status'
     ];
 
     public function attachable()
