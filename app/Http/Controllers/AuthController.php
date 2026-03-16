@@ -41,9 +41,13 @@ class AuthController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (
+            !$user ||
+            !$user->is_admin ||
+            !Hash::check($data['password'], $user->password)
+        ) {
             throw ValidationException::withMessages([
-                'email' => ['Invalid email or password'],
+                'email' => ['Invalid credentials or admin access required'],
             ]);
         }
 
