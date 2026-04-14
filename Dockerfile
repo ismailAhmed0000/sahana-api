@@ -1,7 +1,6 @@
-FROM php:8.3-cli
+FROM php:8.3-cli-bookworm
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     libzip-dev \
@@ -9,33 +8,39 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     curl \
-    && docker-php-ext-install \
+    && docker-php-ext-configure opcache --enable-opcache \
+    && docker-php-ext-install -j"$(nproc)" \
         pdo_mysql \
         mbstring \
         zip \
         exif \
         pcntl \
+        opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www
 
-# Copy application files
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist
+
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Temporary key for build-time artisan hooks only; set real APP_KEY on Railway.
+RUN export APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')" \
+    && composer install --no-dev --no-interaction --optimize-autoloader \
+    && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache/data storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Laravel permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
- && chmod -R 775 storage bootstrap/cache
+COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Expose Railway port
+ENV APP_ENV=production \
+    LOG_CHANNEL=stderr
+
 EXPOSE 8080
 
-# Start Laravel (NO artisan commands here)
-CMD php -S 0.0.0.0:$PORT -t public
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
