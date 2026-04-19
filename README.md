@@ -1,6 +1,6 @@
-# Shana API
+# Sahana API
 
-Backend API for **Shana**: SOS alerts, disaster and safe points, resources, and NGO user management. Built with [Laravel 12](https://laravel.com/docs/12.x) and [Laravel Sanctum](https://laravel.com/docs/sanctum) for token-based authentication.
+Backend API for **Sahana**: SOS alerts, disaster and safe points, resources, and NGO user management. Built with [Laravel 12](https://laravel.com/docs/12.x) and [Laravel Sanctum](https://laravel.com/docs/sanctum) for token-based authentication.
 
 ## Requirements
 
