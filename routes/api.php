@@ -15,6 +15,7 @@ Route::apiResource('safe-points', SafePointController::class);
 Route::apiResource('attachable', AttachableController::class);
 Route::get('/approved-ngos', [AuthController::class, 'getApprovedNgos']);
 Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
+Route::patch('/users/{user}/disapprove', [AuthController::class, 'disapprove']);
 Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
 
 Route::post('/ngo/register', [AuthController::class, 'register']);
@@ -27,5 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
     Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
+    Route::patch('/users/{user}/disapprove', [AuthController::class, 'disapprove']);
     Route::delete('/resource/{resource}/delete', [SafePointController::class, 'deleteResource']);
 });

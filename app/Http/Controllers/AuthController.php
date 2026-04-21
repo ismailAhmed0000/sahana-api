@@ -42,9 +42,9 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (
-            !$user ||
-            !$user->is_admin ||
-            !Hash::check($data['password'], $user->password)
+            ! $user ||
+            ! $user->is_admin ||
+            ! Hash::check($data['password'], $user->password)
         ) {
             throw ValidationException::withMessages([
                 'email' => ['Invalid credentials or admin access required'],
@@ -71,7 +71,7 @@ class AuthController extends Controller
             ->where('approved', true)
             ->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'user_id' => ['Invalid credentials or NGO not approved'],
             ]);
@@ -93,7 +93,7 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'ME', 'data' => [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ]]);
     }
 
@@ -122,15 +122,30 @@ class AuthController extends Controller
         ]);
     }
 
+    public function disapprove(User $user)
+    {
+        $user->update([
+            'approved' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'User disapproved successfully',
+            'data' => $user,
+        ]);
+    }
+
+
     public function getApprovedNgos()
     {
         $ngo = User::where('approved', true)->get();
+
         return response()->json(['message' => 'all ngos fetched', 'data' => $ngo]);
     }
 
     public function ngos()
     {
         $ngo = User::all();
+
         return response()->json(['message' => 'all ngos fetched', 'data' => $ngo]);
     }
 }
