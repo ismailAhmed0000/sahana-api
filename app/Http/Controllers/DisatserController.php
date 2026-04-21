@@ -40,6 +40,10 @@ class DisatserController extends Controller
     public function update(Request $request, DisasterPoint $disaster)
     {
         $data = $request->validate([
+            'type' => 'sometimes|in:flood,storm,earthquake,fire',
+            'disaster_level' => 'sometimes|in:low,medium,high,very_high',
+            'latitude' => 'sometimes|numeric|between:-90,90',
+            'longitude' => 'sometimes|numeric|between:-180,180',
             'disasterType' => 'sometimes|in:flood,storm,earthquake,fire',
             'disasterLevel' => 'sometimes|in:low,medium,high,very_high',
             'description' => 'sometimes|string',
@@ -49,8 +53,16 @@ class DisatserController extends Controller
 
         $mappedData = [];
 
+        if (isset($data['type'])) {
+            $mappedData['type'] = $data['type'];
+        }
+
         if (isset($data['disasterType'])) {
             $mappedData['type'] = $data['disasterType'];
+        }
+
+        if (isset($data['disaster_level'])) {
+            $mappedData['disaster_level'] = $data['disaster_level'];
         }
 
         if (isset($data['disasterLevel'])) {
@@ -65,8 +77,16 @@ class DisatserController extends Controller
             $mappedData['latitude'] = $data['location']['lat'];
         }
 
+        if (isset($data['latitude'])) {
+            $mappedData['latitude'] = $data['latitude'];
+        }
+
         if (isset($data['location']['lng'])) {
             $mappedData['longitude'] = $data['location']['lng'];
+        }
+
+        if (isset($data['longitude'])) {
+            $mappedData['longitude'] = $data['longitude'];
         }
 
         $disaster->update($mappedData);
