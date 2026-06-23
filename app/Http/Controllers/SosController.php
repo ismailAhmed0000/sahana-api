@@ -21,12 +21,17 @@ class SosController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->input('status') === 'attended') {
+            $request->merge(['status' => 'attending']);
+        }
+
         $data = $request->validate([
             'description' => 'required|string|max:255',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'status' => 'nullable|in:pending,attending,solved'
+            'status' => 'nullable|in:pending,attending,solved',
+            'attended_by' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {
@@ -42,11 +47,16 @@ class SosController extends Controller
 
     public function update(Request $request, Sos $sos)
     {
+        if ($request->input('status') === 'attended') {
+            $request->merge(['status' => 'attending']);
+        }
+
         $data = $request->validate([
             'description' => 'sometimes|string|max:255',
             'latitude' => 'sometimes|numeric',
             'longitude' => 'sometimes|numeric',
-            'status' => 'sometimes|in:pending,attending,solved'
+            'status' => 'sometimes|in:pending,attending,solved',
+            'attended_by' => 'sometimes|nullable|string|max:255',
         ]);
 
         $sos->update($data);

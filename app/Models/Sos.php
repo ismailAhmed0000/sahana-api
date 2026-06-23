@@ -6,11 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sos extends Model
 {
+    protected $attributes = [
+        'attended_by' => null,
+    ];
+
     protected $fillable = [
         'description',
-        'latitude ',
+        'latitude',
         'longitude',
-        'status'
+        'status',
+        'image_path',
+        'attended_by',
     ];
 
     public function attachable()
