@@ -10,6 +10,10 @@ class Sos extends Model
         'attended_by' => null,
     ];
 
+    protected $appends = [
+        'image_url',
+    ];
+
     protected $fillable = [
         'description',
         'latitude',
@@ -22,5 +26,12 @@ class Sos extends Model
     public function attachable()
     {
         return $this->morphTo();
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image_path
+            ? asset('storage/' . $this->image_path)
+            : null;
     }
 }

@@ -37,7 +37,7 @@ class SosController extends Controller
         if ($request->hasFile('image')) {
             $data['image_path'] = $request
                 ->file('image')
-                ->store('safepoints', 'public');
+                ->store('sos', 'public');
         }
 
         $sos = Sos::create($data);
@@ -55,13 +55,20 @@ class SosController extends Controller
             'description' => 'sometimes|string|max:255',
             'latitude' => 'sometimes|numeric',
             'longitude' => 'sometimes|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'sometimes|in:pending,attending,solved',
             'attended_by' => 'sometimes|nullable|string|max:255',
         ]);
 
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request
+                ->file('image')
+                ->store('sos', 'public');
+        }
+
         $sos->update($data);
 
-        return response()->json(['message' => 'Sos request created successflyy', 'data' => $sos]);
+        return response()->json(['message' => 'Sos request updated successfully', 'data' => $sos->fresh()]);
     }
 
     public function destroy($id)
